@@ -5,6 +5,8 @@
     Public Sub New()
         InitializeComponent()
 
+        PortBox.Text = port
+
         server = New Server()
         server.ServerEnabled = AddressOf ServerEnabled
         server.ServerDisabled = AddressOf ServerDisabled
@@ -31,6 +33,15 @@
             server.Disable()
         Catch ex As InvalidOperationException
             Log(ex.Message)
+        End Try
+    End Sub
+
+    Private Sub PortBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles PortBox.TextChanged
+        Try
+            port = CInt(PortBox.Text)
+            PortBox.Background = Nothing
+        Catch ex As InvalidCastException
+            PortBox.Background = New SolidColorBrush(Colors.Red)
         End Try
     End Sub
 
