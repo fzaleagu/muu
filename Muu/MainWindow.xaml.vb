@@ -1,6 +1,9 @@
-﻿Class MainWindow
+﻿Imports System.Collections.ObjectModel
+
+Class MainWindow
     Private server As Server
     Private port As Integer = 8080
+    Private files As ObservableCollection(Of File) = New ObservableCollection(Of File)()
 
     Public Sub New()
         InitializeComponent()
@@ -52,6 +55,28 @@
         LogViewer.ScrollToEnd()
     End Sub
 
+    Private Sub AddButton_Click(sender As Object, e As RoutedEventArgs) Handles AddButton.Click
+        Dim dialog = New Forms.OpenFileDialog() With {
+            .Multiselect = True
+        }
+        Dim result = dialog.ShowDialog()
+        If result = Forms.DialogResult.OK Then
+            For Each path In dialog.FileNames
+                files.Add(New File With {.Path = path})
+            Next
+        End If
+    End Sub
+
+    Private Sub RemoveButton_Click(sender As Object, e As RoutedEventArgs) Handles RemoveButton.Click
+        Dim selected = New List(Of File)
+        For Each file In SharedFilesView.SelectedItems
+            selected.Add(file)
+        Next
+        For Each file In selected
+            files.Remove(file)
+        Next
+    End Sub
+
     Private Sub Log(message As String)
         If (LogBox.Text.Length > 0) Then
             LogBox.AppendText(Environment.NewLine)
@@ -70,4 +95,10 @@
             PortBox.IsEnabled = True
         End If
     End Sub
+
+    Public ReadOnly Property SharedFiles() As ObservableCollection(Of File)
+        Get
+            Return files
+        End Get
+    End Property
 End Class

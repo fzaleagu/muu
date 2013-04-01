@@ -1,4 +1,4 @@
-﻿<Window x:Class="MainWindow"
+﻿<Window x:Class="MainWindow" Name="MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Muu" Height="350" Width="525">
@@ -8,15 +8,32 @@
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
                     <Button Content="Enable" Width="70" Margin="3" Name="EnableButton" Click="EnableButton_Click" />
                     <Button Content="Disable" Width="70" Margin="3" Name="DisableButton" Click="DisableButton_Click" />
-                    <Label Content="Port:"></Label>
-                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Height="20" Width="50" Name="PortBox"></TextBox>
+                    <Label Content="Port:" />
+                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Height="20" Width="50" Margin="3" Name="PortBox" />
                 </StackPanel>
             </DockPanel>
-            <DockPanel>
-                <ScrollViewer Name="LogViewer">
-                    <TextBox Name="LogBox" TextChanged="LogBox_TextChanged" IsReadOnly="True"></TextBox>
-                </ScrollViewer>
-            </DockPanel>
+            <TabControl>
+                <TabItem Header="Log">
+                    <ScrollViewer Name="LogViewer">
+                        <TextBox Name="LogBox" TextChanged="LogBox_TextChanged" IsReadOnly="True" />
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="Shared">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                            <Button Name="AddButton" Content="Add" Width="70" Margin="3" />
+                            <Button Name="RemoveButton" Content="Remove" Width="70" Margin="3" />
+                        </StackPanel>
+                        <ListView Name="SharedFilesView" ItemsSource="{Binding ElementName=MainWindow, Path=SharedFiles}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
         </DockPanel>
     </Grid>
 </Window>
