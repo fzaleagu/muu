@@ -61,9 +61,19 @@ Class MainWindow
         }
         Dim result = dialog.ShowDialog()
         If result = Forms.DialogResult.OK Then
+            Dim notAdded = New List(Of File)
             For Each path In dialog.FileNames
-                files.Add(New File With {.Path = path})
+                Dim file = New File With {.Path = path}
+                If Not files.Contains(file) Then
+                    files.Add(file)
+                Else
+                    notAdded.Add(file)
+                End If
             Next
+
+            If notAdded.Count > 0 Then
+                MessageBox.Show(MainWindow, "Some filenames were already added")
+            End If
         End If
     End Sub
 
