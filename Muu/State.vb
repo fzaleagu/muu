@@ -14,8 +14,12 @@ Public Class State
         ReadMore(callback)
     End Sub
 
+    Public Sub Send(data() As Byte, size As Integer, callback As Action)
+        handler.BeginSend(data, 0, size, 0, New AsyncCallback(AddressOf SendCallback), callback)
+    End Sub
+
     Public Sub Send(data() As Byte, callback As Action)
-        handler.BeginSend(data, 0, data.Length, 0, New AsyncCallback(AddressOf SendCallback), callback)
+        Send(data, data.Length, callback)
     End Sub
 
     Public Sub Close()

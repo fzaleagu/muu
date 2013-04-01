@@ -32,6 +32,14 @@ Public Class Request
         Return httpVersion
     End Function
 
+    Public Function GetFileName() As String
+        Dim parts = requestURI.Split(New [Char]() {"/"c}, StringSplitOptions.RemoveEmptyEntries)
+        If parts.Count = 0 Then
+            Return Nothing
+        End If
+        Return parts(parts.GetUpperBound(0))
+    End Function
+
     Private Sub MakeIndex()
         Dim begin = 0
         For index = 0 To data.Length - 2

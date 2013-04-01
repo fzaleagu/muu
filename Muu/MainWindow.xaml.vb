@@ -11,7 +11,7 @@ Class MainWindow
         PortBox.Text = port
         SetControlState(False)
 
-        server = New Server()
+        server = New Server(files)
         server.ServerEnabled = AddressOf ServerEnabled
         server.ServerDisabled = AddressOf ServerDisabled
     End Sub

@@ -1,7 +1,10 @@
-﻿Imports System.Net
+﻿Imports System.Collections.ObjectModel
+Imports System.IO
+Imports System.Net
 Imports System.Net.Sockets
 
 Public Class Server
+    Private files As Collection(Of File)
     Private listener As Socket
     Private lock As New Object
 
@@ -10,6 +13,10 @@ Public Class Server
 
     Public Delegate Sub ServerDisabledDelegate()
     Public ServerDisabled As ServerDisabledDelegate
+
+    Public Sub New(files As Collection(Of File))
+        Me.files = files
+    End Sub
 
     Public Sub Enable(port As Integer)
         SyncLock lock
@@ -53,10 +60,35 @@ Public Class Server
     End Sub
 
     Private Sub HandleRequest(state As State, request As Request)
-        state.Send(MakeDebugResponse(request),
-                   Sub()
-                       state.Close()
-                   End Sub)
+        Dim file = GetFile(request.GetFileName())
+        If file Is Nothing Then
+            state.Close()
+        Else
+            Dim stream = New FileStream(file.Path, FileMode.Open)
+            Dim header =
+                "HTTP/1.1 200 OK" + ControlChars.CrLf +
+                "Content-Type: text/plain" + ControlChars.CrLf +
+                ControlChars.CrLf
+            Dim headerData() = Text.Encoding.ASCII.GetBytes(header)
+            state.Send(headerData,
+                       Sub()
+                           SendResponse(state, stream)
+                       End Sub)
+        End If
+    End Sub
+
+    Private Async Sub SendResponse(state As State, stream As FileStream)
+        Dim buffer() = New [Byte](4095) {}
+        Dim read = Await stream.ReadAsync(buffer, 0, buffer.Length)
+        If read > 0 Then
+            state.Send(buffer, read,
+                       Sub()
+                           SendResponse(state, stream)
+                       End Sub)
+        Else
+            stream.Dispose()
+            state.Close()
+        End If
     End Sub
 
     Private Sub AcceptCallback(ar As IAsyncResult)
@@ -89,5 +121,14 @@ Public Class Server
         Buffer.BlockCopy(headerData, 0, response, 0, headerData.Length)
         Buffer.BlockCopy(bodyData, 0, response, headerData.Length, bodyData.Length)
         Return response
+    End Function
+
+    Private Function GetFile(fileName As String) As File
+        For Each file In files
+            If file.FileName().Equals(fileName) Then
+                Return file
+            End If
+        Next
+        Return Nothing
     End Function
 End Class
