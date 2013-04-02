@@ -44,9 +44,9 @@ Class MainWindow
 
     Private Sub PortBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles PortBox.TextChanged
         Try
-            port = CInt(PortBox.Text)
+            port = Integer.Parse(PortBox.Text)
             PortBox.Background = Nothing
-        Catch ex As InvalidCastException
+        Catch ex As Exception
             PortBox.Background = New SolidColorBrush(Colors.Red)
         End Try
     End Sub
