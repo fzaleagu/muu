@@ -33,19 +33,23 @@ Public Class State
     End Sub
 
     Private Sub ReadCallback(ar As IAsyncResult)
-        Dim bytesRead = handler.EndReceive(ar)
-        Dim callback As Action(Of Request) = ar.AsyncState
-        If bytesRead > 0 Then
-            requestBuilder.AppendData(readBuffer, bytesRead)
-            If requestBuilder.IsComplete() Then
-                Dim request = requestBuilder.GetRequest()
-                If callback <> Nothing Then
-                    callback(request)
+        Try
+            Dim bytesRead = handler.EndReceive(ar)
+            Dim callback As Action(Of Request) = ar.AsyncState
+            If bytesRead > 0 Then
+                requestBuilder.AppendData(readBuffer, bytesRead)
+                If requestBuilder.IsComplete() Then
+                    Dim request = requestBuilder.GetRequest()
+                    If callback <> Nothing Then
+                        callback(request)
+                    End If
+                Else
+                    ReadMore(callback)
                 End If
-            Else
-                ReadMore(callback)
             End If
-        End If
+        Catch ex As SocketException
+            Close()
+        End Try
     End Sub
 
     Private Sub SendCallback(ar As IAsyncResult)
