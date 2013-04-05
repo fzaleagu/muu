@@ -56,11 +56,17 @@ Public Class Server
                 Return
             End If
             Dim state As New State(handler)
-            state.ReceiveRequest(
-                Sub(request As Request)
-                    HandleRequest(state, request)
-                End Sub)
+            HandleClient(state)
         End While
+    End Sub
+
+    Private Async Sub HandleClient(state As State)
+        Dim request = Await state.ReceiveRequest()
+        If request Is Nothing Then
+            Return
+        End If
+
+        HandleRequest(state, request)
     End Sub
 
     Private Sub HandleRequest(state As State, request As Request)

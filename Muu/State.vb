@@ -5,14 +5,31 @@ Public Class State
     Private handler As Socket
     Private readBuffer() As Byte = New [Byte](1023) {}
     Private requestBuilder As RequestBuilder = New RequestBuilder()
+    Private stream As NetworkStream
 
     Public Sub New(handler As Socket)
         Me.handler = handler
+        stream = New NetworkStream(handler)
     End Sub
 
-    Public Sub ReceiveRequest(callback As Action(Of Request))
-        ReadMore(callback)
-    End Sub
+    Public Async Function ReceiveRequest() As Task(Of Request)
+        Try
+            While True
+                Dim bytesRead = Await stream.ReadAsync(readBuffer, 0, readBuffer.Count)
+                If bytesRead > 0 Then
+                    requestBuilder.AppendData(readBuffer, bytesRead)
+                    If requestBuilder.IsComplete() Then
+                        Return requestBuilder.GetRequest()
+                    End If
+                Else
+                    Return Nothing
+                End If
+            End While
+        Catch ex As SocketException
+            Close()
+        End Try
+        Return Nothing
+    End Function
 
     Public Sub Send(data() As Byte, size As Integer, callback As Action)
         handler.BeginSend(data, 0, size, 0, New AsyncCallback(AddressOf SendCallback), callback)
@@ -26,30 +43,6 @@ Public Class State
         handler.Shutdown(SocketShutdown.Both)
         handler.Close()
         handler = Nothing
-    End Sub
-
-    Private Sub ReadMore(callback As Action(Of Request))
-        handler.BeginReceive(readBuffer, 0, readBuffer.Length, 0, New AsyncCallback(AddressOf ReadCallback), callback)
-    End Sub
-
-    Private Sub ReadCallback(ar As IAsyncResult)
-        Try
-            Dim bytesRead = handler.EndReceive(ar)
-            Dim callback As Action(Of Request) = ar.AsyncState
-            If bytesRead > 0 Then
-                requestBuilder.AppendData(readBuffer, bytesRead)
-                If requestBuilder.IsComplete() Then
-                    Dim request = requestBuilder.GetRequest()
-                    If callback <> Nothing Then
-                        callback(request)
-                    End If
-                Else
-                    ReadMore(callback)
-                End If
-            End If
-        Catch ex As SocketException
-            Close()
-        End Try
     End Sub
 
     Private Sub SendCallback(ar As IAsyncResult)
