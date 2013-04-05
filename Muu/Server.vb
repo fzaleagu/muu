@@ -5,7 +5,7 @@ Imports System.Net.Sockets
 
 Public Class Server
     Private files As Collection(Of File)
-    Private listener As Socket
+    Private listener As TcpListener
     Private lock As New Object
 
     Public Delegate Sub ServerEnabledDelegate()
@@ -23,11 +23,9 @@ Public Class Server
             If Not listener Is Nothing Then
                 Throw New InvalidOperationException("Server is already enabled")
             End If
-            Dim localEndPoint As New IPEndPoint(IPAddress.IPv6Any, port)
-            listener = New Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp)
-            listener.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, 0)
-            listener.Bind(localEndPoint)
-            listener.Listen(100)
+            listener = New TcpListener(IPAddress.IPv6Any, port)
+            listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, False)
+            listener.Start()
         End SyncLock
 
         AcceptMore()
@@ -42,7 +40,7 @@ Public Class Server
             If listener Is Nothing Then
                 Throw New InvalidOperationException("Server is already disabled")
             End If
-            listener.Close()
+            listener.Stop()
             listener = Nothing
         End SyncLock
 
@@ -54,7 +52,7 @@ Public Class Server
     Private Sub AcceptMore()
         SyncLock lock
             If Not listener Is Nothing Then
-                listener.BeginAccept(New AsyncCallback(AddressOf AcceptCallback), Nothing)
+                listener.BeginAcceptSocket(New AsyncCallback(AddressOf AcceptCallback), Nothing)
             End If
         End SyncLock
     End Sub
@@ -98,7 +96,7 @@ Public Class Server
             If listener Is Nothing Then
                 Return
             End If
-            handler = listener.EndAccept(ar)
+            handler = listener.EndAcceptSocket(ar)
         End SyncLock
 
         AcceptMore()
