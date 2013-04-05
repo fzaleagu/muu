@@ -28,7 +28,7 @@ Public Class Server
             listener.Start()
         End SyncLock
 
-        AcceptMore()
+        AcceptClients()
 
         If Not ServerEnabled Is Nothing Then
             ServerEnabled()
@@ -49,12 +49,18 @@ Public Class Server
         End If
     End Sub
 
-    Private Sub AcceptMore()
-        SyncLock lock
-            If Not listener Is Nothing Then
-                listener.BeginAcceptSocket(New AsyncCallback(AddressOf AcceptCallback), Nothing)
+    Private Async Sub AcceptClients()
+        While True
+            Dim handler As Socket = Await listener.AcceptSocketAsync()
+            If handler Is Nothing Then
+                Return
             End If
-        End SyncLock
+            Dim state As New State(handler)
+            state.ReceiveRequest(
+                Sub(request As Request)
+                    HandleRequest(state, request)
+                End Sub)
+        End While
     End Sub
 
     Private Sub HandleRequest(state As State, request As Request)
@@ -87,25 +93,6 @@ Public Class Server
             stream.Dispose()
             state.Close()
         End If
-    End Sub
-
-    Private Sub AcceptCallback(ar As IAsyncResult)
-        Dim handler As Socket
-
-        SyncLock lock
-            If listener Is Nothing Then
-                Return
-            End If
-            handler = listener.EndAcceptSocket(ar)
-        End SyncLock
-
-        AcceptMore()
-
-        Dim state As New State(handler)
-        state.ReceiveRequest(
-            Sub(request As Request)
-                HandleRequest(state, request)
-            End Sub)
     End Sub
 
     Private Function MakeDebugResponse(request As Request) As Byte()
