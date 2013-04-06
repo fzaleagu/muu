@@ -74,11 +74,9 @@ Public Class Server
         Dim file = GetFile(request.GetFileName())
         If file IsNot Nothing Then
             Using Stream = New FileStream(file.Path, FileMode.Open)
-                Dim header =
-                    "HTTP/1.1 200 OK" + ControlChars.CrLf +
-                    "Content-Type: text/plain" + ControlChars.CrLf +
-                    ControlChars.CrLf
-                Dim headerData() = Text.Encoding.ASCII.GetBytes(header)
+                Dim header = New Header(200)
+                header.ContentType = "text/plain"
+                Dim headerData = header.GetData()
                 Await state.SendAsync(headerData, headerData.Count)
 
                 Dim buffer() = New [Byte](4095) {}
@@ -94,11 +92,9 @@ Public Class Server
     End Function
 
     Private Function MakeDebugResponse(request As Request) As Byte()
-        Dim header =
-            "HTTP/1.1 200 OK" + ControlChars.CrLf +
-            "Content-Type: text/plain" + ControlChars.CrLf +
-            ControlChars.CrLf
-        Dim headerData() = Text.Encoding.ASCII.GetBytes(header)
+        Dim header = New Header(200)
+        header.ContentType = "text/plain"
+        Dim headerData = header.GetData()
         Dim bodyData() = request.GetData()
         Dim response() As Byte = New [Byte](headerData.Length + bodyData.Length - 1) {}
         Buffer.BlockCopy(headerData, 0, response, 0, headerData.Length)

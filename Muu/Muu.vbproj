@@ -74,6 +74,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Header.vb" />
     <Compile Include="Request.vb" />
     <Compile Include="RequestBuilder.vb" />
     <Compile Include="Server.vb" />
