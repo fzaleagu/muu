@@ -72,9 +72,7 @@ Public Class Server
 
     Private Async Function HandleRequest(state As State, request As Request) As Task
         Dim file = GetFile(request.GetFileName())
-        If file Is Nothing Then
-            state.Close()
-        Else
+        If file IsNot Nothing Then
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header =
                     "HTTP/1.1 200 OK" + ControlChars.CrLf +
