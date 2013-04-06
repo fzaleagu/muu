@@ -76,8 +76,7 @@ Public Class Server
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header = New Header(200)
                 header.ContentType = "text/plain"
-                Dim headerData = header.GetData()
-                Await state.SendAsync(headerData, headerData.Count)
+                Await state.SendAsync(header.GetData())
 
                 Dim buffer() = New [Byte](4095) {}
                 Dim read As Integer

@@ -35,6 +35,10 @@ Public Class State
         Await stream.WriteAsync(data, 0, size)
     End Function
 
+    Public Async Function SendAsync(data() As Byte) As Task
+        Await SendAsync(data, data.Count)
+    End Function
+
     Public Sub Close()
         stream.Dispose()
         handler.Shutdown(SocketShutdown.Both)
