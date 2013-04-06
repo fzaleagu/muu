@@ -31,25 +31,14 @@ Public Class State
         Return Nothing
     End Function
 
-    Public Sub Send(data() As Byte, size As Integer, callback As Action)
-        handler.BeginSend(data, 0, size, 0, New AsyncCallback(AddressOf SendCallback), callback)
-    End Sub
-
-    Public Sub Send(data() As Byte, callback As Action)
-        Send(data, data.Length, callback)
-    End Sub
+    Public Async Function SendAsync(data() As Byte, size As Integer) As Task
+        Await stream.WriteAsync(data, 0, size)
+    End Function
 
     Public Sub Close()
+        stream.Dispose()
         handler.Shutdown(SocketShutdown.Both)
         handler.Close()
         handler = Nothing
-    End Sub
-
-    Private Sub SendCallback(ar As IAsyncResult)
-        Dim bytesSent = handler.EndReceive(ar)
-        Dim callback As Action = ar.AsyncState
-        If callback <> Nothing Then
-            callback()
-        End If
     End Sub
 End Class

@@ -66,40 +66,34 @@ Public Class Server
             Return
         End If
 
-        HandleRequest(state, request)
+        Await HandleRequest(state, request)
+        state.Close()
     End Sub
 
-    Private Sub HandleRequest(state As State, request As Request)
+    Private Async Function HandleRequest(state As State, request As Request) As Task
         Dim file = GetFile(request.GetFileName())
         If file Is Nothing Then
             state.Close()
         Else
-            Dim stream = New FileStream(file.Path, FileMode.Open)
-            Dim header =
-                "HTTP/1.1 200 OK" + ControlChars.CrLf +
-                "Content-Type: text/plain" + ControlChars.CrLf +
-                ControlChars.CrLf
-            Dim headerData() = Text.Encoding.ASCII.GetBytes(header)
-            state.Send(headerData,
-                       Sub()
-                           SendResponse(state, stream)
-                       End Sub)
-        End If
-    End Sub
+            Using Stream = New FileStream(file.Path, FileMode.Open)
+                Dim header =
+                    "HTTP/1.1 200 OK" + ControlChars.CrLf +
+                    "Content-Type: text/plain" + ControlChars.CrLf +
+                    ControlChars.CrLf
+                Dim headerData() = Text.Encoding.ASCII.GetBytes(header)
+                Await state.SendAsync(headerData, headerData.Count)
 
-    Private Async Sub SendResponse(state As State, stream As FileStream)
-        Dim buffer() = New [Byte](4095) {}
-        Dim read = Await stream.ReadAsync(buffer, 0, buffer.Length)
-        If read > 0 Then
-            state.Send(buffer, read,
-                       Sub()
-                           SendResponse(state, stream)
-                       End Sub)
-        Else
-            stream.Dispose()
-            state.Close()
+                Dim buffer() = New [Byte](4095) {}
+                Dim read As Integer
+                Do
+                    read = Await Stream.ReadAsync(buffer, 0, buffer.Length)
+                    If read > 0 Then
+                        Await state.SendAsync(buffer, read)
+                    End If
+                Loop While read > 0
+            End Using
         End If
-    End Sub
+    End Function
 
     Private Function MakeDebugResponse(request As Request) As Byte()
         Dim header =
