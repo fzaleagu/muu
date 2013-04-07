@@ -7,6 +7,8 @@
         Select Case statusCode
             Case 200
                 status = String.Format("{0} OK", statusCode)
+            Case 404
+                status = String.Format("{0} Not Found", statusCode)
             Case Else
                 Throw New ArgumentException("Invalid status code")
         End Select

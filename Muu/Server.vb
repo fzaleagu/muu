@@ -72,7 +72,9 @@ Public Class Server
 
     Private Async Function HandleRequest(state As State, request As Request) As Task
         Dim file = GetFile(request.GetFileName())
-        If file IsNot Nothing Then
+        If file Is Nothing Then
+            Await Send404(state, request)
+        Else
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header = New Header(200)
                 header.ContentType = "text/plain"
@@ -88,6 +90,15 @@ Public Class Server
                 Loop While read > 0
             End Using
         End If
+    End Function
+
+    Private Async Function Send404(state As State, request As Request) As Task
+        Dim header = New Header(404)
+        header.ContentType = "text/plain"
+        Await state.SendAsync(header.GetData())
+
+        Dim body = "404 Not Found"
+        Await state.SendAsync(Text.Encoding.ASCII.GetBytes(body))
     End Function
 
     Private Function MakeDebugResponse(request As Request) As Byte()
