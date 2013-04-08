@@ -91,7 +91,7 @@ Class MainWindow
         If (LogBox.Text.Length > 0) Then
             LogBox.AppendText(Environment.NewLine)
         End If
-        LogBox.AppendText(message)
+        LogBox.AppendText(String.Format("{0}: {1}", Date.Now, message))
     End Sub
 
     Private Sub SetControlState(serverEnabled As Boolean)
