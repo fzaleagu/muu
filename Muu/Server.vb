@@ -51,7 +51,11 @@ Public Class Server
 
     Private Async Sub AcceptClients()
         While True
-            Dim handler As Socket = Await listener.AcceptSocketAsync()
+            Dim handler As Socket = Nothing
+            Try
+                handler = Await listener.AcceptSocketAsync()
+            Catch ex As ObjectDisposedException
+            End Try
             If handler Is Nothing Then
                 Return
             End If
