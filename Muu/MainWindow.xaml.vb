@@ -11,10 +11,11 @@ Class MainWindow
         PortBox.Text = port
         SetControlState(False)
 
-        server = New Server(files)
-        server.ServerEnabled = AddressOf ServerEnabled
-        server.ServerDisabled = AddressOf ServerDisabled
-        server.ServerLogger = AddressOf Log
+        server = New Server(files) With {
+            .ServerDisabled = AddressOf ServerDisabled,
+            .ServerEnabled = AddressOf ServerEnabled,
+            .ServerLogger = AddressOf Log
+        }
     End Sub
 
     Private Sub ServerEnabled()
