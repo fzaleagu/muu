@@ -14,6 +14,9 @@ Public Class Server
     Public Delegate Sub ServerDisabledDelegate()
     Public ServerDisabled As ServerDisabledDelegate
 
+    Public Delegate Sub ServerLoggerDelegate(message As String)
+    Public ServerLogger As ServerLoggerDelegate
+
     Public Sub New(files As Collection(Of File))
         Me.files = files
     End Sub
@@ -79,6 +82,9 @@ Public Class Server
         If file Is Nothing Then
             Await Send404(state, request)
         Else
+            If ServerLogger IsNot Nothing Then
+                ServerLogger(String.Format("Sending {0}", file.FileName))
+            End If
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header = New Header(200)
                 header.ContentType = "text/plain"

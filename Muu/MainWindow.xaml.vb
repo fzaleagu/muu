@@ -14,6 +14,7 @@ Class MainWindow
         server = New Server(files)
         server.ServerEnabled = AddressOf ServerEnabled
         server.ServerDisabled = AddressOf ServerDisabled
+        server.ServerLogger = AddressOf Log
     End Sub
 
     Private Sub ServerEnabled()
