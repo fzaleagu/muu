@@ -19,12 +19,10 @@ Class MainWindow
     End Sub
 
     Private Sub ServerEnabled()
-        Log("Server enabled")
         SetControlState(True)
     End Sub
 
     Private Sub ServerDisabled()
-        Log("Server disabled")
         SetControlState(False)
     End Sub
 

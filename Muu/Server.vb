@@ -34,6 +34,7 @@ Public Class Server
         AcceptClients()
 
         If Not ServerEnabled Is Nothing Then
+            Log("Server enabled")
             ServerEnabled()
         End If
     End Sub
@@ -48,6 +49,7 @@ Public Class Server
         End SyncLock
 
         If Not ServerDisabled Is Nothing Then
+            Log("Server disabled")
             ServerDisabled()
         End If
     End Sub
@@ -82,9 +84,7 @@ Public Class Server
         If file Is Nothing Then
             Await Send404(state, request)
         Else
-            If ServerLogger IsNot Nothing Then
-                ServerLogger(String.Format("Sending {0}", file.FileName))
-            End If
+            Log(String.Format("Sending {0}", file.FileName))
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header = New Header(200)
                 header.ContentType = "text/plain"
@@ -130,4 +130,10 @@ Public Class Server
         Next
         Return Nothing
     End Function
+
+    Private Sub Log(message As String)
+        If ServerLogger IsNot Nothing Then
+            ServerLogger(message)
+        End If
+    End Sub
 End Class
