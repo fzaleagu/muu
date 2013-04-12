@@ -26,9 +26,14 @@ Public Class Server
             If Not listener Is Nothing Then
                 Throw New InvalidOperationException("Server is already enabled")
             End If
-            listener = New TcpListener(IPAddress.IPv6Any, port)
-            listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, False)
-            listener.Start()
+            Try
+                listener = New TcpListener(IPAddress.IPv6Any, port)
+                listener.Server.SetSocketOption(SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, False)
+                listener.Start()
+            Catch ex As Exception
+                listener = Nothing
+                Throw New InvalidOperationException("Failed to enable server", ex)
+            End Try
         End SyncLock
 
         AcceptClients()
