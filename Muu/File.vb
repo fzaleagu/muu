@@ -1,5 +1,15 @@
 ﻿Public Class File
-    Public Property Path As String
+    Private _Path As String
+
+    Sub New(path As String)
+        _Path = path
+    End Sub
+
+    Public ReadOnly Property Path As String
+        Get
+            Return _Path
+        End Get
+    End Property
 
     Public ReadOnly Property FileName
         Get

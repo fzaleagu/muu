@@ -63,7 +63,7 @@ Class MainWindow
         If result = Forms.DialogResult.OK Then
             Dim notAdded = New List(Of File)
             For Each path In dialog.FileNames
-                Dim file = New File With {.Path = path}
+                Dim file = New File(path)
                 If Not files.Contains(file) Then
                     files.Add(file)
                 Else
