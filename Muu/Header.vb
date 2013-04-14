@@ -1,6 +1,7 @@
 ﻿Public Class Header
     Private status As String
 
+    Public Property ContentLength As Long?
     Public Property ContentType As String
 
     Public Sub New(statusCode As Integer)
@@ -16,6 +17,10 @@
 
     Public Function GetData() As Byte()
         Dim header = "HTTP/1.1 " + status + ControlChars.CrLf
+
+        If ContentLength IsNot Nothing Then
+            header += "Content-Length: " + ContentLength.Value.ToString + ControlChars.CrLf
+        End If
 
         If ContentType IsNot Nothing Then
             header += "Content-Type: " + ContentType + ControlChars.CrLf

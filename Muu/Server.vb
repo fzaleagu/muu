@@ -92,6 +92,7 @@ Public Class Server
             Log(String.Format("Sending {0}", file.FileName))
             Using Stream = New FileStream(file.Path, FileMode.Open)
                 Dim header = New Header(200)
+                header.ContentLength = file.FileSize
                 header.ContentType = file.ContentType
                 Await state.SendAsync(header.GetData())
 

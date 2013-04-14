@@ -25,6 +25,17 @@
         End Get
     End Property
 
+    Public ReadOnly Property FileSize As Long?
+        Get
+            Try
+                Dim fileInfo As New IO.FileInfo(_Path)
+                Return fileInfo.Length
+            Catch ex As IO.FileNotFoundException
+                Return Nothing
+            End Try
+        End Get
+    End Property
+
     Public ReadOnly Property ContentType
         Get
             Return _ContentType
