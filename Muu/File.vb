@@ -1,11 +1,11 @@
 ﻿Public Class File
-    Private _Path As String
+    Private _FilePath As String
     Private _ContentType As String
 
-    Sub New(path As String)
-        _Path = path
+    Sub New(filePath As String)
+        _FilePath = filePath
 
-        Select Case IO.Path.GetExtension(_Path)
+        Select Case IO.Path.GetExtension(_FilePath)
             Case ".txt"
                 _ContentType = "text/plain"
             Case Else
@@ -13,22 +13,22 @@
         End Select
     End Sub
 
-    Public ReadOnly Property Path As String
+    Public ReadOnly Property FilePath As String
         Get
-            Return _Path
+            Return _FilePath
         End Get
     End Property
 
     Public ReadOnly Property FileName
         Get
-            Return System.IO.Path.GetFileName(Path)
+            Return System.IO.Path.GetFileName(FilePath)
         End Get
     End Property
 
     Public ReadOnly Property FileSize As Long?
         Get
             Try
-                Dim fileInfo As New IO.FileInfo(_Path)
+                Dim fileInfo As New IO.FileInfo(_FilePath)
                 Return fileInfo.Length
             Catch ex As IO.FileNotFoundException
                 Return Nothing

@@ -90,7 +90,7 @@ Public Class Server
             Await Send404(state, request)
         Else
             Log(String.Format("Sending {0}", file.FileName))
-            Using Stream = New FileStream(file.Path, FileMode.Open)
+            Using Stream = New FileStream(file.FilePath, FileMode.Open)
                 Dim header = New Header(200)
                 header.ContentLength = file.FileSize
                 header.ContentType = file.ContentType
