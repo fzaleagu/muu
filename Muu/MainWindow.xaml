@@ -28,7 +28,7 @@
                         <ListView Name="SharedFilesView" ItemsSource="{Binding ElementName=MainWindow, Path=SharedFiles}">
                             <ListView.View>
                                 <GridView>
-                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" />
+                                    <GridViewColumn Header="Path" DisplayMemberBinding="{Binding FilePath}" />
                                 </GridView>
                             </ListView.View>
                         </ListView>
