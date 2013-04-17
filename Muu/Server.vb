@@ -85,7 +85,7 @@ Public Class Server
     End Sub
 
     Private Async Function HandleRequest(state As State, request As Request) As Task
-        Dim file = GetFile(request.GetFileName())
+        Dim file = GetFile(request.FileName)
         If file Is Nothing Then
             Await Send404(state, request)
         Else
@@ -121,7 +121,7 @@ Public Class Server
         Dim header = New Header(200)
         header.ContentType = "text/plain"
         Dim headerData = header.GetData()
-        Dim bodyData() = request.GetData()
+        Dim bodyData() = request.Data
         Dim response() As Byte = New [Byte](headerData.Length + bodyData.Length - 1) {}
         Buffer.BlockCopy(headerData, 0, response, 0, headerData.Length)
         Buffer.BlockCopy(bodyData, 0, response, headerData.Length, bodyData.Length)
