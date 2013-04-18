@@ -60,17 +60,16 @@ Public Class Server
     End Sub
 
     Private Async Sub AcceptClients()
-        While True
+        While listener IsNot Nothing
             Dim handler As Socket = Nothing
             Try
                 handler = Await listener.AcceptSocketAsync()
             Catch ex As ObjectDisposedException
             End Try
-            If handler Is Nothing Then
-                Return
+            If handler IsNot Nothing Then
+                Dim state As New State(handler)
+                HandleClient(state)
             End If
-            Dim state As New State(handler)
-            HandleClient(state)
         End While
     End Sub
 
