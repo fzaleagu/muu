@@ -47,7 +47,8 @@ Public Class Request
             If parts.Count = 0 Then
                 Return Nothing
             End If
-            Return parts(parts.GetUpperBound(0))
+            Dim raw As String = parts(parts.GetUpperBound(0))
+            Return raw.Replace("%20", " ")
         End Get
     End Property
 
