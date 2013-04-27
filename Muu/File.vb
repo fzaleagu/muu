@@ -8,6 +8,12 @@ Public Class File
         _FilePath = filePath
 
         Select Case Path.GetExtension(_FilePath)
+            Case ".gif"
+                _ContentType = "image/gif"
+            Case ".jpg"
+                _ContentType = "image/jpeg"
+            Case ".png"
+                _ContentType = "image/png"
             Case ".txt"
                 _ContentType = "text/plain"
             Case Else
