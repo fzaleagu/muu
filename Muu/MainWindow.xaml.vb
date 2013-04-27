@@ -26,7 +26,7 @@ Class MainWindow
         SetControlState(False)
     End Sub
 
-    Private Sub EnableButton_Click(sender As Object, e As RoutedEventArgs)
+    Private Sub EnableButton_Click(sender As Object, e As RoutedEventArgs) Handles EnableButton.Click
         Try
             server.Enable(port)
         Catch ex As InvalidOperationException
@@ -34,7 +34,7 @@ Class MainWindow
         End Try
     End Sub
 
-    Private Sub DisableButton_Click(sender As Object, e As RoutedEventArgs)
+    Private Sub DisableButton_Click(sender As Object, e As RoutedEventArgs) Handles DisableButton.Click
         Try
             server.Disable()
         Catch ex As InvalidOperationException

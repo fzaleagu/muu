@@ -7,8 +7,8 @@
         <DockPanel>
             <DockPanel DockPanel.Dock="Top">
                 <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
-                    <Button Content="Enable" Width="70" Margin="3" Name="EnableButton" Click="EnableButton_Click" />
-                    <Button Content="Disable" Width="70" Margin="3" Name="DisableButton" Click="DisableButton_Click" />
+                    <Button Content="Enable" Width="70" Margin="3" Name="EnableButton" />
+                    <Button Content="Disable" Width="70" Margin="3" Name="DisableButton" />
                     <Label Content="Port:" />
                     <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Height="20" Width="50" Margin="3" Name="PortBox" />
                 </StackPanel>
