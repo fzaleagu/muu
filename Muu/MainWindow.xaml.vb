@@ -51,7 +51,7 @@ Class MainWindow
         End Try
     End Sub
 
-    Private Sub LogBox_TextChanged(sender As Object, e As TextChangedEventArgs)
+    Private Sub LogBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles LogBox.TextChanged
         LogViewer.ScrollToEnd()
     End Sub
 

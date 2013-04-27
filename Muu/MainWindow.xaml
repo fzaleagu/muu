@@ -16,7 +16,7 @@
             <TabControl>
                 <TabItem Header="Log">
                     <ScrollViewer Name="LogViewer">
-                        <TextBox Name="LogBox" TextChanged="LogBox_TextChanged" IsReadOnly="True" />
+                        <TextBox Name="LogBox" IsReadOnly="True" />
                     </ScrollViewer>
                 </TabItem>
                 <TabItem Header="Shared">
