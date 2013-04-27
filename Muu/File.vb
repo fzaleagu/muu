@@ -7,7 +7,7 @@ Public Class File
     Sub New(filePath As String)
         _FilePath = filePath
 
-        Select Case Path.GetExtension(_FilePath)
+        Select Case Path.GetExtension(_FilePath).ToLower
             Case ".gif"
                 _ContentType = "image/gif"
             Case ".jpg"
