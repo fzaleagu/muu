@@ -55,6 +55,25 @@ Class MainWindow
         LogViewer.ScrollToEnd()
     End Sub
 
+    Private Async Sub SaveButton_Click(sender As Object, e As RoutedEventArgs) Handles SaveButton.Click
+        Dim dialog = New Forms.SaveFileDialog()
+        Dim result = dialog.ShowDialog()
+        If result = Forms.DialogResult.OK Then
+            Dim path = dialog.FileName
+            Using writer As New IO.StreamWriter(path)
+                Using reader As New IO.StringReader(LogBox.Text)
+                    Dim line As String = Nothing
+                    Do
+                        line = Await reader.ReadLineAsync()
+                        If line IsNot Nothing Then
+                            Await writer.WriteLineAsync(line)
+                        End If
+                    Loop Until line Is Nothing
+                End Using
+            End Using
+        End If
+    End Sub
+
     Private Sub AddButton_Click(sender As Object, e As RoutedEventArgs) Handles AddButton.Click
         Dim dialog = New Forms.OpenFileDialog() With {
             .Multiselect = True

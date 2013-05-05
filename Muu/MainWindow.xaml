@@ -15,9 +15,14 @@
             </DockPanel>
             <TabControl>
                 <TabItem Header="Log">
-                    <ScrollViewer Name="LogViewer">
-                        <TextBox Name="LogBox" IsReadOnly="True" />
-                    </ScrollViewer>
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+                            <Button Name="SaveButton" Content="Save" Width="70" Margin="3" />
+                        </StackPanel>
+                        <ScrollViewer Name="LogViewer">
+                            <TextBox Name="LogBox" IsReadOnly="True" />
+                        </ScrollViewer>
+                    </DockPanel>
                 </TabItem>
                 <TabItem Header="Shared">
                     <DockPanel>
